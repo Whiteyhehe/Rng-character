@@ -1,0 +1,256 @@
+-- Load Orion Library
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+
+-- Create a new window
+local Window = OrionLib:MakeWindow({
+    Name = "My Script",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "OrionTest"
+})
+
+-- Add a tab called "Main"
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998", -- You can change this to any icon you prefer
+    PremiumOnly = false
+})
+
+-- Add a label to the "Main" tab
+MainTab:AddLabel("Welcome to the Main Tab")
+
+-- Add a toggle for Auto Roll
+local autoRoll = false
+
+MainTab:AddToggle({
+    Name = "Auto Roll",
+    Default = false,
+    Callback = function(value)
+        autoRoll = value
+        if autoRoll then
+            for i = 1, 100 do
+                while autoRoll and wait() do
+                    game:GetService("ReplicatedStorage").Source.Rolling.Remotes.Activate:InvokeServer()
+                    game:GetService("ReplicatedStorage").Source.Rolling.Remotes.ClaimReward:FireServer()
+                end
+            end
+        end
+    end
+})
+
+-- Add a toggle for Auto Farm
+local autoFarm = false
+
+MainTab:AddToggle({
+    Name = "Auto Farm",
+    Default = false,
+    Callback = function(value)
+        autoFarm = value
+        if autoFarm then
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            while autoFarm do
+                -- Find all Hitbox parts in the Workspace
+                local hitboxes = {}
+                for _, part in pairs(game:GetService("Workspace"):GetDescendants()) do
+                    if part:IsA("Part") and part.Name == "Hitbox" then
+                        table.insert(hitboxes, part)
+                    end
+                end
+
+                -- Teleport to each Hitbox part in sequence
+                for _, hitbox in ipairs(hitboxes) do
+                    humanoidRootPart.CFrame = hitbox.CFrame
+                    wait(1)  -- Wait 1 second before moving to the next Hitbox
+                    if not autoFarm then
+                        break
+                    end
+                end
+            end
+        end
+    end
+})
+
+-- Add a tab called "Potions"
+local PotionsTab = Window:MakeTab({
+    Name = "Potions",
+    Icon = "rbxassetid://4483345998", -- You can change this to any icon you prefer
+    PremiumOnly = false
+})
+
+-- Toggles for auto-using potions
+local useLuckPotion1 = false
+local useLuckPotion2 = false
+local useHastePotion1 = false
+local useHastePotion2 = false
+
+PotionsTab:AddToggle({
+    Name = "Auto Use LuckPotion1",
+    Default = false,
+    Callback = function(value)
+        useLuckPotion1 = value
+    end
+})
+
+PotionsTab:AddToggle({
+    Name = "Auto Use LuckPotion2",
+    Default = false,
+    Callback = function(value)
+        useLuckPotion2 = value
+    end
+})
+
+PotionsTab:AddToggle({
+    Name = "Auto Use HastePotion1",
+    Default = false,
+    Callback = function(value)
+        useHastePotion1 = value
+    end
+})
+
+PotionsTab:AddToggle({
+    Name = "Auto Use HastePotion2",
+    Default = false,
+    Callback = function(value)
+        useHastePotion2 = value
+    end
+})
+
+-- Function to auto-use potions
+local function autoUsePotions()
+    while true do
+        wait(1)
+        if useLuckPotion1 then
+            local args = { "LuckPotion1", 1 }
+            game:GetService("ReplicatedStorage").Source.Potions.Remotes.Use:InvokeServer(unpack(args))
+        end
+        if useLuckPotion2 then
+            local args = { "LuckPotion2", 1 }
+            game:GetService("ReplicatedStorage").Source.Potions.Remotes.Use:InvokeServer(unpack(args))
+        end
+        if useHastePotion1 then
+            local args = { "HastePotion1", 1 }
+            game:GetService("ReplicatedStorage").Source.Potions.Remotes.Use:InvokeServer(unpack(args))
+        end
+        if useHastePotion2 then
+            local args = { "HastePotion2", 1 }
+            game:GetService("ReplicatedStorage").Source.Potions.Remotes.Use:InvokeServer(unpack(args))
+        end
+    end
+end
+
+-- Start the auto-use potions function in a separate coroutine
+coroutine.wrap(autoUsePotions)()
+
+MiscTab:AddTextbox({
+    Name = "Walk Speed",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        local speed = tonumber(value)
+        if speed then
+            MiscTab:AddToggle({
+                Name = "Activate Walk Speed",
+                Default = false,
+                Callback = function(toggleValue)
+                    if toggleValue then
+                        changeWalkSpeed(speed)
+                    else
+                        changeWalkSpeed(16)  -- Reset to default walk speed
+                    end
+                end
+            })
+        end
+    end
+})
+
+-- Add a toggle for infinite jump to the misc tab
+MiscTab:AddToggle({
+    Name = "Infinite Jump",
+    Default = false,
+    Callback = function(value)
+        infiniteJumpEnabled = value
+    end
+})
+
+-- Add ESP loadstring to the misc tab
+MiscTab:AddButton({
+    Name = "ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/iv9qAHZP"))()
+    end
+})
+
+local UniversalTab = Window:MakeTab({
+    Name = "Universal Scripts",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false,
+    BorderColor = Color3.fromRGB(128, 0, 128)
+})
+
+-- Add Universal Scripts label
+UniversalTab:AddLabel("Universal Scripts")
+
+-- Add Inf Yield script button
+UniversalTab:AddButton({
+    Name = "Load Inf Yield",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Inf-yeild-New-Version-1836"))()
+    end
+})
+
+-- Add Nameless Admin script button
+UniversalTab:AddButton({
+    Name = "Load Nameless Admin",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Nameless-Admin-Official-15022"))()
+    end
+})
+
+-- Add Remote Spy script button
+UniversalTab:AddButton({
+    Name = "Load Remote Spy",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Just-A-Script-Rewrite-12363"))()
+    end
+})
+
+-- Add Fly Mobile script button
+UniversalTab:AddButton({
+    Name = "Load Fly Mobile",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-FLY-GUI-V3-8031"))()
+    end
+})
+
+local InfJumpTab = Window:MakeTab({
+    Name = "Inf Jump Player",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local UserInputService = game:GetService("UserInputService")
+local targetPlayerName = game:GetService("Players").LocalPlayer.Name
+local infJumpActive = false
+local targetPlayerJumpConnection
+
+local function onJumpRequest()
+    if infJumpActive then
+        local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
+        if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            for i = 1, 10 do
+                local args = {
+                    [1] = targetPlayer.Character.HumanoidRootPart,
+                    [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
+                }
+                game:GetService("ReplicatedStorage").Remotes.Knockback:FireServer(unpack(args))
+                wait(i * 0.5)  -- Waits 0.5, 1.0, 1.5, ... , 5.0 seconds for each iteration
+            end
+        end
+    end
+end
+
+-- Initialize the Orion Library
+OrionLib:Init()
