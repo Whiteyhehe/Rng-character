@@ -3,7 +3,7 @@ local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shle
 
 -- Create a new window
 local Window = OrionLib:MakeWindow({
-    Name = "My Script",
+    Name = "Character Rng",
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "OrionTest"
@@ -144,6 +144,12 @@ end
 -- Start the auto-use potions function in a separate coroutine
 coroutine.wrap(autoUsePotions)()
 
+local MiscTab = Window:MakeTab({
+    Name = "Misc",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
 MiscTab:AddTextbox({
     Name = "Walk Speed",
     Default = "",
@@ -224,33 +230,6 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-FLY-GUI-V3-8031"))()
     end
 })
-
-local InfJumpTab = Window:MakeTab({
-    Name = "Inf Jump Player",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-local UserInputService = game:GetService("UserInputService")
-local targetPlayerName = game:GetService("Players").LocalPlayer.Name
-local infJumpActive = false
-local targetPlayerJumpConnection
-
-local function onJumpRequest()
-    if infJumpActive then
-        local targetPlayer = game:GetService("Players"):FindFirstChild(targetPlayerName)
-        if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            for i = 1, 10 do
-                local args = {
-                    [1] = targetPlayer.Character.HumanoidRootPart,
-                    [2] = Vector3.new(-29.347702026367188, 87.36488342285156, -38.80836868286133)
-                }
-                game:GetService("ReplicatedStorage").Remotes.Knockback:FireServer(unpack(args))
-                wait(i * 0.5)  -- Waits 0.5, 1.0, 1.5, ... , 5.0 seconds for each iteration
-            end
-        end
-    end
-end
 
 -- Initialize the Orion Library
 OrionLib:Init()
