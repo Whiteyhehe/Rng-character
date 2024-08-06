@@ -144,51 +144,6 @@ end
 -- Start the auto-use potions function in a separate coroutine
 coroutine.wrap(autoUsePotions)()
 
-local MiscTab = Window:MakeTab({
-    Name = "Misc",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-MiscTab:AddTextbox({
-    Name = "Walk Speed",
-    Default = "",
-    TextDisappear = true,
-    Callback = function(value)
-        local speed = tonumber(value)
-        if speed then
-            MiscTab:AddToggle({
-                Name = "Activate Walk Speed",
-                Default = false,
-                Callback = function(toggleValue)
-                    if toggleValue then
-                        changeWalkSpeed(speed)
-                    else
-                        changeWalkSpeed(16)  -- Reset to default walk speed
-                    end
-                end
-            })
-        end
-    end
-})
-
--- Add a toggle for infinite jump to the misc tab
-MiscTab:AddToggle({
-    Name = "Infinite Jump",
-    Default = false,
-    Callback = function(value)
-        infiniteJumpEnabled = value
-    end
-})
-
--- Add ESP loadstring to the misc tab
-MiscTab:AddButton({
-    Name = "ESP",
-    Callback = function()
-        loadstring(game:HttpGet("https://pastebin.com/raw/iv9qAHZP"))()
-    end
-})
-
 local UniversalTab = Window:MakeTab({
     Name = "Universal Scripts",
     Icon = "rbxassetid://4483345998",
